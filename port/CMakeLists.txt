@@ -127,6 +127,16 @@ set_source_files_properties(
     PROPERTIES COMPILE_FLAGS
     -Wno-maybe-uninitialized)
 
+set_source_files_properties(
+    ${AZURE_IOT_SDK}/iothub_client/src/iothub_client_core_ll.c
+    ${AZURE_IOT_SDK}/provisioning_client/deps/utpm/src/tpm_codec.c
+    ${AZURE_IOT_SDK}/provisioning_client/adapters/hsm_client_tpm.c
+    ${AZURE_IOT_SDK}/provisioning_client/deps/utpm/src/tpm_socket_comm.c
+    ${AZURE_IOT_SDK}/provisioning_client/deps/utpm/src/tpm_socket_comm.c
+		${AZURE_IOT_SDK}/provisioning_client/deps/utpm/src/tpm_comm_emulator.c
+    PROPERTIES COMPILE_FLAGS
+    -Wno-format)
+
 component_compile_options (
 	-Wno-unused-function
 	-Wno-missing-braces
