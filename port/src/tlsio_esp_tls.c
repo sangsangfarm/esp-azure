@@ -21,6 +21,7 @@
 #include "azure_c_shared_utility/tlsio_options.h"
 
 #include "esp_tls.h"
+#include "esp_idf_version.h"
 
 typedef struct
 {
