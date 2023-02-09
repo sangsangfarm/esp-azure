@@ -124,7 +124,11 @@ static void internal_close(TLS_IO_INSTANCE* tls_io_instance)
     /* Codes_SRS_TLSIO_30_006: [ The phrase "enter TLSIO_STATE_EXT_CLOSED" means the adapter shall forcibly close any existing connections then call the on_io_close_complete function and pass the on_io_close_complete_context that was supplied in tlsio_close_async. ]*/
     /* Codes_SRS_TLSIO_30_051: [ On success, if the underlying TLS does not support asynchronous closing, then the adapter shall enter TLSIO_STATE_EXT_CLOSED immediately after entering TLSIO_STATE_EX_CLOSING. ]*/
 
+#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
     esp_tls_conn_destroy(tls_io_instance->esp_tls_handle);
+#else
+    esp_tls_conn_delete(tls_io_instance->esp_tls_handle);
+#endif
     while (process_and_destroy_head_message(tls_io_instance, IO_SEND_CANCELLED));
     // singlylinkedlist_destroy gets called in the main destroy
 
@@ -216,7 +220,11 @@ static CONCRETE_IO_HANDLE tlsio_esp_tls_create(void* io_create_parameters)
                 result->pending_transmission_list = NULL;
                 tlsio_options_initialize(&result->options, TLSIO_OPTION_BIT_TRUSTED_CERTS |
                 TLSIO_OPTION_BIT_x509_RSA_CERT | TLSIO_OPTION_BIT_x509_ECC_CERT);
+#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
                 result->esp_tls_handle = esp_tls_init();
+#else
+                result->esp_tls_handle = calloc(1, sizeof(esp_tls_t));
+#endif
                 if (result->esp_tls_handle == NULL)
                 {
                     /* Codes_SRS_TLSIO_30_011: [ If any resource allocation fails, tlsio_create shall return NULL. ]*/
